@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <style>
+            body{background:#eeeeee;}
+            canvas{background:#ffffff;}
+        </style>
+    </head>
+    <body>
+        <!-- 我们要操作的canvas -->
+        <canvas id="gbcanvas" width="500" height="500"></canvas>
+        <br>
+        <!-- 显示分数的span #score -->
+        <span>your score : </span><span id="score">0</span>
+        <br>
+        <!-- 游戏操作提示 -->
+        <span>操作方法：方向键控制方向</span>
+        <br>
+
+        <script>
+
+            let head = new Image();
+            head.src="./public/snake.png";
+            if(head.complete){
+               console.info("head.complete");
+            }else{
+               head.onload = function(){
+                console.info("头像加载成功");
+               };
+               head.onerror = function(){
+                 console.info('头像加载失败，请重试');
+               };
+            }
+
+            const c = document.getElementById('gbcanvas').getContext('2d');
+            const mWidth  =  document.getElementById('gbcanvas').offsetWidth; 
+            //当前可视区域的宽，即canvas的宽
+            const mHeight = document.getElementById('gbcanvas').offsetHeight;  
+            //当前可视区域的高，即canvas的高
+            const unit = 20;
+
+            function draw(data){
+                c.clearRect(0 , 0 , mWidth , mHeight);
+                //画蛇
+                data.snakes.forEach(function(snake){
+                    c.beginPath();
+
+                    c.drawImage(head,0,0,100,100,snake.mes[0].x * unit , snake.mes[0].y * unit , unit ,unit)
+                    for(var i = 1 ; i < snake.mes.length ; i++){
+                        c.fullStyle = '#FF4400';
+                        c.lineStyle = '#000000';
+                        c.rect(snake.mes[i].x * unit , snake.mes[i].y * unit , unit ,unit);
+                    }
+                    c.closePath();
+                    c.stroke();
+                })
+            }
+        
+            
+        </script>
+
+        <script src="./public/socket.io.js"></script>
+        
+        <script type="text/javascript">
+            var socket  = io.connect("http://localhost:80");
+            //game.start();
+            var id = Math.random().toString();
+
+            socket.emit("join",id)
+
+            socket.on("reply",data=>{//收到服务器的信息
+                console.log(data);
+                draw(data);
+            })
+            socket.on('disconnect', function () {
+                console.info("disconnect")
+               // io.sockets.emit('user disconnected');
+             });
+        </script>
+
+        <script>
+        window.onkeyup = function(key){
+    //console.info(key)
+            var ori = '';
+            switch(key.keyCode){
+                case 37:
+                    ori = 'left';
+                    break;
+                case 39:
+                    ori = 'right';
+                    break;
+                case 38:
+                    ori = 'up';
+                    break;
+                case 40:
+                    ori = 'down';
+                    break;
+            }
+            if(ori == ''){
+                return ;
+            }
+            else{
+                socket.emit("changeOri",{id,ori})                
+            }
+            //改变蛇走向
+            //that.actors && that.actors[0].changeOri(ori);
+        }
+        </script>
+    </body>
+</html>
+        

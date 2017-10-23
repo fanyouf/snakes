@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <style>
+            body{background:#eeeeee;}
+            canvas{background:#ffffff;}
+        </style>
+    </head>
+    <body>
+        <!-- 我们要操作的canvas -->
+        <canvas id="gbcanvas" width="500" height="500"></canvas>
+        <br>
+        <!-- 显示分数的span #score -->
+        <span>your score : </span><span id="score">0</span>
+        <br>
+        <!-- 游戏操作提示 -->
+        <span>操作方法：方向键控制方向</span>
+        <br>
+
+        <script src="./food.js"></script>
+        <script src="./snake.js"></script>
+        <script src="./game.js"></script>
+        
+        <script type="text/javascript">
+            game.start();
+            
+           
+        </script>
+    </body>
+</html>
+        
